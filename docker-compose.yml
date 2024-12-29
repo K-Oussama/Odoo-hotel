@@ -24,7 +24,7 @@ services:
       - odoo-network
 
   db:
-    image: postgres:latest
+    image: postgres:16 #latest
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=odoo
