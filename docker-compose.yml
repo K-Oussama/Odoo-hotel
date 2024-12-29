@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  odoo:
+    image: odoo:latest
+    command: --dev all
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - odoo-addons:/mnt/extra-addons
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - PGUSER=odoo
+      - PGPASSWORD=odoo
+      - PGHOST=db
+      - PGPORT=5432
+      - ODOO_MASTER_PASS=admin
+    networks:
+      - odoo-network
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+
+networks:
+  odoo-network:
+    driver: bridge
+
+volumes:
+  odoo-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./src/odoo-data
+      o: bind
+  odoo-addons:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./src/odoo-addons
+      o: bind
+  odoo-db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./src/odoo-db
+      o: bind
